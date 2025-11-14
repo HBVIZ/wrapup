@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# GitHub Pages - keep docs folder
-!docs/.gitkeep
+# GitHub Pages - docs folder is committed for deployment
+# docs/
 
 # Editor directories and files
 .vscode/*

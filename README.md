@@ -38,25 +38,30 @@ This will create a `docs` folder with the production build.
 
 ## Deployment to GitHub Pages
 
-This project is configured for GitHub Pages deployment. You have two options:
+This project is configured to build to the `docs` folder for GitHub Pages.
 
-### Option 1: Automatic Deployment (Recommended)
+### Setup Steps:
 
-1. Push your code to GitHub
-2. Go to your repository **Settings** → **Pages**
-3. Under **Source**, select **GitHub Actions**
-4. The GitHub Actions workflow will automatically build and deploy on every push to `main` or `master`
+1. **Build the project:**
+   ```bash
+   npm run build
+   ```
 
-The workflow is already set up in `.github/workflows/deploy.yml`
+2. **Commit and push the `docs` folder:**
+   ```bash
+   git add docs
+   git commit -m "Build for GitHub Pages"
+   git push
+   ```
 
-### Option 2: Manual Deployment using docs folder
+3. **Enable GitHub Pages:**
+   - Go to your repository on GitHub
+   - Click **Settings** → **Pages**
+   - Under **Source**, select **Deploy from a branch**
+   - Select **main** (or **master**) branch and **/docs** folder
+   - Click **Save**
 
-1. Build the project: `npm run build`
-2. Commit the `docs` folder to your repository
-3. Go to your repository **Settings** → **Pages**
-4. Under **Source**, select **Deploy from a branch**
-5. Select **main** (or **master**) branch and **/docs** folder
-6. Click **Save**
+Your site will be available at `https://yourusername.github.io/your-repo-name/`
 
 ### For Custom Domain or Subdirectory
 
@@ -66,7 +71,7 @@ If deploying to a subdirectory (e.g., `username.github.io/repo-name`), update `v
 base: '/your-repo-name/',
 ```
 
-Then rebuild: `npm run build`
+Then rebuild: `npm run build` and commit the `docs` folder again.
 
 ## Adding Models
 
