@@ -38,30 +38,35 @@ This will create a `docs` folder with the production build.
 
 ## Deployment to GitHub Pages
 
-This project is configured to build to the `docs` folder for GitHub Pages.
+This project uses GitHub Actions to automatically deploy to GitHub Pages from the root.
 
 ### Setup Steps:
 
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
+1. **Enable GitHub Pages with GitHub Actions:**
+   - Go to your repository on GitHub
+   - Click **Settings** → **Pages**
+   - Under **Source**, select **GitHub Actions**
+   - Save the settings
 
-2. **Commit and push the `docs` folder:**
+2. **Push your code:**
    ```bash
-   git add docs
-   git commit -m "Build for GitHub Pages"
+   git add .
+   git commit -m "Setup GitHub Pages deployment"
    git push
    ```
 
-3. **Enable GitHub Pages:**
-   - Go to your repository on GitHub
-   - Click **Settings** → **Pages**
-   - Under **Source**, select **Deploy from a branch**
-   - Select **main** (or **master**) branch and **/docs** folder
-   - Click **Save**
+3. **Automatic Deployment:**
+   - The GitHub Actions workflow will automatically build and deploy on every push to `main`
+   - Check the **Actions** tab to see the deployment status
+   - Your site will be live at `https://yourusername.github.io/your-repo-name/`
 
-Your site will be available at `https://yourusername.github.io/your-repo-name/`
+### Manual Build (for testing):
+
+```bash
+npm run build
+```
+
+This creates a `dist` folder with the production build (for local testing only).
 
 ### For Custom Domain or Subdirectory
 
@@ -71,7 +76,7 @@ If deploying to a subdirectory (e.g., `username.github.io/repo-name`), update `v
 base: '/your-repo-name/',
 ```
 
-Then rebuild: `npm run build` and commit the `docs` folder again.
+The base path is already configured in `vite.config.js` for your repository.
 
 ## Adding Models
 

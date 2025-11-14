@@ -6,7 +6,7 @@ export default defineConfig({
     open: true
   },
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
     assetsDir: 'assets'
   },
   // For GitHub Pages - set to your repository name
