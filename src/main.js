@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { loadModel, setScene, setCamera } from './modelLoader.js';
 
 // Scene setup
@@ -19,23 +20,23 @@ const cameraConfig = {
   // Y: down (-) to up (+)
   // Z: back (-) to front (+)
   position: {
-    x: 0,    // Horizontal position (left/right)
-    y: 2,    // Vertical position (up/down) - higher = looking down more
-    z: 5     // Distance from model (forward/back) - higher = further away
+    x: 0.0,    // Horizontal position (left/right)
+    y: 2.0,    // Vertical position (up/down) - higher = looking down more
+    z: 6.8     // Distance from model (forward/back) - higher = further away
   },
   
   // Where the camera is looking at (target point)
   // Usually keep this at [0, 0, 0] to look at the model center
   target: {
     x: 0,    // Horizontal target
-    y: 0,    // Vertical target (0 = model center)
+    y: 2.0,    // Vertical target (0 = model center)
     z: 0     // Depth target
   },
   
   // Camera field of view (how wide the view is)
   // Lower = zoomed in (like a telephoto lens)
   // Higher = wider view (like a wide-angle lens)
-  fov: 50,  // Field of view in degrees (typical: 35-75)
+  fov: 55,  // Field of view in degrees (typical: 35-75)
   
   // Camera near and far clipping planes
   near: 0.1,  // Objects closer than this won't render
@@ -181,178 +182,67 @@ if (lightingConfig.directional.enabled) {
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-// ============================================
-// CAMERA HUD (Heads-Up Display)
-// ============================================
-function createCameraHUD() {
-  const hud = document.createElement('div');
-  hud.id = 'camera-hud';
-  hud.style.cssText = `
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    z-index: 1000;
-    min-width: 280px;
-    max-height: 80vh;
-    overflow-y: auto;
-  `;
-  
-  hud.innerHTML = `
-    <h3 style="margin: 0 0 15px 0; font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 8px;">
-      📷 Camera Controls
-    </h3>
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #aaa;">
-        Position X (Left/Right):
-      </label>
-      <input type="range" id="cam-x" min="-20" max="20" step="0.1" value="${cameraConfig.position.x}" 
-        style="width: 100%; margin-bottom: 5px;">
-      <span id="cam-x-value" style="font-size: 10px; color: #0f0;">${cameraConfig.position.x.toFixed(1)}</span>
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #aaa;">
-        Position Y (Up/Down):
-      </label>
-      <input type="range" id="cam-y" min="-10" max="10" step="0.1" value="${cameraConfig.position.y}" 
-        style="width: 100%; margin-bottom: 5px;">
-      <span id="cam-y-value" style="font-size: 10px; color: #0f0;">${cameraConfig.position.y.toFixed(1)}</span>
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #aaa;">
-        Position Z (Distance):
-      </label>
-      <input type="range" id="cam-z" min="1" max="20" step="0.1" value="${cameraConfig.position.z}" 
-        style="width: 100%; margin-bottom: 5px;">
-      <span id="cam-z-value" style="font-size: 10px; color: #0f0;">${cameraConfig.position.z.toFixed(1)}</span>
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #aaa;">
-        Target Y (Look Height):
-      </label>
-      <input type="range" id="target-y" min="-5" max="5" step="0.1" value="${cameraConfig.target.y}" 
-        style="width: 100%; margin-bottom: 5px;">
-      <span id="target-y-value" style="font-size: 10px; color: #0f0;">${cameraConfig.target.y.toFixed(1)}</span>
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #aaa;">
-        Field of View (Zoom):
-      </label>
-      <input type="range" id="cam-fov" min="20" max="100" step="1" value="${cameraConfig.fov}" 
-        style="width: 100%; margin-bottom: 5px;">
-      <span id="cam-fov-value" style="font-size: 10px; color: #0f0;">${cameraConfig.fov}°</span>
-    </div>
-    
-    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #444;">
-      <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Current Position:</div>
-      <div id="current-pos" style="font-size: 10px; color: #0ff; font-family: monospace;">
-        X: ${camera.position.x.toFixed(2)}<br>
-        Y: ${camera.position.y.toFixed(2)}<br>
-        Z: ${camera.position.z.toFixed(2)}
-      </div>
-    </div>
-    
-    <button id="reset-camera" style="
-      margin-top: 15px;
-      width: 100%;
-      padding: 8px;
-      background: #333;
-      color: white;
-      border: 1px solid #555;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 11px;
-    ">Reset to Default</button>
-    
-    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #444;">
-      <div style="font-size: 9px; color: #666; line-height: 1.4;">
-        💡 Tip: Adjust sliders to reposition camera in real-time. 
-        Copy the values to cameraConfig in main.js to save them.
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(hud);
-  
-  // Add event listeners
-  const camX = document.getElementById('cam-x');
-  const camY = document.getElementById('cam-y');
-  const camZ = document.getElementById('cam-z');
-  const targetY = document.getElementById('target-y');
-  const camFov = document.getElementById('cam-fov');
-  const resetBtn = document.getElementById('reset-camera');
-  
-  function updateCamera() {
-    camera.position.set(
-      parseFloat(camX.value),
-      parseFloat(camY.value),
-      parseFloat(camZ.value)
-    );
-    controls.target.set(
-      cameraConfig.target.x,
-      parseFloat(targetY.value),
-      cameraConfig.target.z
-    );
-    camera.fov = parseFloat(camFov.value);
-    camera.updateProjectionMatrix();
-    controls.update();
-    
-    // Update display values
-    document.getElementById('cam-x-value').textContent = parseFloat(camX.value).toFixed(1);
-    document.getElementById('cam-y-value').textContent = parseFloat(camY.value).toFixed(1);
-    document.getElementById('cam-z-value').textContent = parseFloat(camZ.value).toFixed(1);
-    document.getElementById('target-y-value').textContent = parseFloat(targetY.value).toFixed(1);
-    document.getElementById('cam-fov-value').textContent = parseFloat(camFov.value) + '°';
-    
-    // Update current position
-    const posEl = document.getElementById('current-pos');
-    posEl.innerHTML = `
-      X: ${camera.position.x.toFixed(2)}<br>
-      Y: ${camera.position.y.toFixed(2)}<br>
-      Z: ${camera.position.z.toFixed(2)}
-    `;
-  }
-  
-  camX.addEventListener('input', updateCamera);
-  camY.addEventListener('input', updateCamera);
-  camZ.addEventListener('input', updateCamera);
-  targetY.addEventListener('input', updateCamera);
-  camFov.addEventListener('input', updateCamera);
-  
-  resetBtn.addEventListener('click', () => {
-    camX.value = cameraConfig.position.x;
-    camY.value = cameraConfig.position.y;
-    camZ.value = cameraConfig.position.z;
-    targetY.value = cameraConfig.target.y;
-    camFov.value = cameraConfig.fov;
-    updateCamera();
-  });
-  
-  // Update current position display in animation loop
-  return () => {
-    const posEl = document.getElementById('current-pos');
-    if (posEl) {
-      posEl.innerHTML = `
-        X: ${camera.position.x.toFixed(2)}<br>
-        Y: ${camera.position.y.toFixed(2)}<br>
-        Z: ${camera.position.z.toFixed(2)}
-      `;
-    }
-  };
-}
+// Toggle button for Axes Helper
+const axesToggle = document.createElement('button');
+axesToggle.textContent = 'Hide Axes';
+axesToggle.style.cssText = `
+  position: fixed;
+  top: 120px;
+  left: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 1001;
+  font-family: monospace;
+`;
+let axesVisible = true;
+axesToggle.addEventListener('click', () => {
+  axesVisible = !axesVisible;
+  axesHelper.visible = axesVisible;
+  axesToggle.textContent = axesVisible ? 'Hide Axes' : 'Show Axes';
+});
+document.body.appendChild(axesToggle);
 
-// Create the HUD
-const updateHUD = createCameraHUD();
+// ============================================
+// STATS HUD (Performance Monitor)
+// ============================================
+// Create Stats.js performance monitor
+const stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+stats.dom.style.position = 'absolute';
+stats.dom.style.top = '0px';
+stats.dom.style.left = '0px';
+stats.dom.style.zIndex = '1000';
+document.body.appendChild(stats.dom);
+
+// Toggle button for Stats
+const statsToggle = document.createElement('button');
+statsToggle.textContent = 'Hide Stats';
+statsToggle.style.cssText = `
+  position: fixed;
+  top: 80px;
+  left: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 1001;
+  font-family: monospace;
+`;
+let statsVisible = true;
+statsToggle.addEventListener('click', () => {
+  statsVisible = !statsVisible;
+  stats.dom.style.display = statsVisible ? 'block' : 'none';
+  statsToggle.textContent = statsVisible ? 'Hide Stats' : 'Show Stats';
+});
+document.body.appendChild(statsToggle);
 
 // Load the airwrap model
 // Use import.meta.env.BASE_URL to get the base path for GitHub Pages
@@ -360,11 +250,27 @@ const basePath = import.meta.env.BASE_URL;
 loadModel(`${basePath}models/test-models-air.glb`, {
   position: [0, 0, 0],
   scale: 1,
-  useCamera: true // Use camera from GLB if available
+  useCamera: false // Don't use camera from GLB - use our configured camera instead
 }).then((result) => {
   console.log('Airwrap model loaded successfully!', result.model);
+  
+  // Ensure camera is positioned correctly after model loads
+  camera.position.set(
+    cameraConfig.position.x,
+    cameraConfig.position.y,
+    cameraConfig.position.z
+  );
+  controls.target.set(
+    cameraConfig.target.x,
+    cameraConfig.target.y,
+    cameraConfig.target.z
+  );
+  camera.fov = cameraConfig.fov;
+  camera.updateProjectionMatrix();
+  controls.update();
+  
   if (result.cameras.length > 0) {
-    console.log(`Found ${result.cameras.length} camera(s) in GLB`);
+    console.log(`Found ${result.cameras.length} camera(s) in GLB (not using them)`);
   }
   if (result.animations.length > 0) {
     console.log(`Found ${result.animations.length} animation(s) in GLB`);
@@ -376,11 +282,12 @@ loadModel(`${basePath}models/test-models-air.glb`, {
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
+  
+  // Update stats (FPS counter)
+  stats.update();
+  
   controls.update();
   renderer.render(scene, camera);
-  
-  // Update HUD display
-  if (updateHUD) updateHUD();
 }
 
 animate();
