@@ -34,6 +34,40 @@ This will start the dev server at `http://localhost:3000`
 npm run build
 ```
 
+This will create a `docs` folder with the production build.
+
+## Deployment to GitHub Pages
+
+This project is configured for GitHub Pages deployment. You have two options:
+
+### Option 1: Automatic Deployment (Recommended)
+
+1. Push your code to GitHub
+2. Go to your repository **Settings** → **Pages**
+3. Under **Source**, select **GitHub Actions**
+4. The GitHub Actions workflow will automatically build and deploy on every push to `main` or `master`
+
+The workflow is already set up in `.github/workflows/deploy.yml`
+
+### Option 2: Manual Deployment using docs folder
+
+1. Build the project: `npm run build`
+2. Commit the `docs` folder to your repository
+3. Go to your repository **Settings** → **Pages**
+4. Under **Source**, select **Deploy from a branch**
+5. Select **main** (or **master**) branch and **/docs** folder
+6. Click **Save**
+
+### For Custom Domain or Subdirectory
+
+If deploying to a subdirectory (e.g., `username.github.io/repo-name`), update `vite.config.js`:
+
+```javascript
+base: '/your-repo-name/',
+```
+
+Then rebuild: `npm run build`
+
 ## Adding Models
 
 1. Place your `.glb` or `.gltf` model files in the `/public/models/` directory
