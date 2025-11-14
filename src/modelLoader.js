@@ -37,6 +37,9 @@ export function setCamera(camera, controls) {
  */
 export async function loadModel(path, options = {}) {
   return new Promise((resolve, reject) => {
+    // Log the path being loaded for debugging
+    console.log('ModelLoader: Attempting to load from path:', path);
+    
     gltfLoader.load(
       path,
       (gltf) => {

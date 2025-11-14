@@ -246,8 +246,11 @@ document.body.appendChild(statsToggle);
 
 // Load the airwrap model
 // Use import.meta.env.BASE_URL to get the base path for GitHub Pages
-const basePath = import.meta.env.BASE_URL;
-loadModel(`${basePath}models/test-models-air.glb`, {
+const basePath = import.meta.env.BASE_URL || '/';
+// Ensure basePath ends with / for proper path joining
+const modelPath = `${basePath}${basePath.endsWith('/') ? '' : '/'}models/test-models-air.glb`;
+console.log('Loading model from:', modelPath);
+loadModel(modelPath, {
   position: [0, 0, 0],
   scale: 1,
   useCamera: false // Don't use camera from GLB - use our configured camera instead

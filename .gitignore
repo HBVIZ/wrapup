@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# GitHub Pages - docs folder is committed for deployment
-# docs/
+# GitHub Pages - docs folder is committed for deployment (branch method)
+# Keep docs/ folder in git for branch deployment
 
 # Editor directories and files
 .vscode/*
