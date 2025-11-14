@@ -38,35 +38,41 @@ This will create a `docs` folder with the production build.
 
 ## Deployment to GitHub Pages
 
-This project uses GitHub Actions to automatically deploy to GitHub Pages from the root.
+This project is configured for GitHub Pages deployment using the **branch deployment** method.
 
 ### Setup Steps:
 
-1. **Enable GitHub Pages with GitHub Actions:**
-   - Go to your repository on GitHub
-   - Click **Settings** → **Pages**
-   - Under **Source**, select **GitHub Actions**
-   - Save the settings
-
-2. **Push your code:**
+1. **Build the project:**
    ```bash
-   git add .
-   git commit -m "Setup GitHub Pages deployment"
+   npm run build
+   ```
+   This creates a `docs` folder with the production build.
+
+2. **Commit and push the `docs` folder:**
+   ```bash
+   git add docs
+   git commit -m "Build for GitHub Pages"
    git push
    ```
 
-3. **Automatic Deployment:**
-   - The GitHub Actions workflow will automatically build and deploy on every push to `main`
-   - Check the **Actions** tab to see the deployment status
-   - Your site will be live at `https://yourusername.github.io/your-repo-name/`
+3. **Enable GitHub Pages:**
+   - Go to your repository on GitHub
+   - Click **Settings** → **Pages**
+   - Under **Source**, select **Deploy from a branch**
+   - Select **main** (or **master**) branch and **/docs** folder
+   - Click **Save**
 
-### Manual Build (for testing):
+Your site will be available at `https://yourusername.github.io/your-repo-name/`
 
+### For Future Updates:
+
+After making changes to your code:
 ```bash
 npm run build
+git add docs
+git commit -m "Update build"
+git push
 ```
-
-This creates a `dist` folder with the production build (for local testing only).
 
 ### For Custom Domain or Subdirectory
 

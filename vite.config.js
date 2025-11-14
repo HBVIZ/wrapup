@@ -10,6 +10,7 @@ export default defineConfig({
     assetsDir: 'assets'
   },
   // For GitHub Pages - set to your repository name
+  // If repo is "wrapup", use: base: '/wrapup/'
+  // If using custom domain or username.github.io repo, use: base: '/'
   base: '/wrapup/',
-  // For root domain (username.github.io), use: base: '/'
 });
