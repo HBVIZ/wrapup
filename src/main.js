@@ -128,7 +128,9 @@ const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
 // Load the airwrap model
-loadModel('/models/test-models-air.glb', {
+// Use import.meta.env.BASE_URL to get the base path for GitHub Pages
+const basePath = import.meta.env.BASE_URL;
+loadModel(`${basePath}models/test-models-air.glb`, {
   position: [0, 0, 0],
   scale: 1,
   useCamera: true // Use camera from GLB if available

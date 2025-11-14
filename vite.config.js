@@ -9,8 +9,7 @@ export default defineConfig({
     outDir: 'docs',
     assetsDir: 'assets'
   },
-  // For GitHub Pages - uncomment if deploying to a subdirectory
-  // base: '/your-repo-name/',
-  // For root domain or custom domain, leave base as '/' (default)
-  base: '/'
+  // For GitHub Pages - set to your repository name
+  base: '/wrapup/',
+  // For root domain (username.github.io), use: base: '/'
 });
